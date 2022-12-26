@@ -1,6 +1,6 @@
 package com.lucas.designpatterns.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Cliente {
@@ -12,7 +12,7 @@ public class Cliente {
     private String nome;
 
     @ManyToOne
-    private Endereco endereço;
+    private Endereco endereco;
 
     public Long getId() {
         return id;
@@ -30,11 +30,11 @@ public class Cliente {
         this.nome = nome;
     }
 
-    public Endereco getEndereço() {
-        return endereço;
+    public Endereco getEndereco() {
+        return endereco;
     }
 
-    public void setEndereço(Endereco endereço) {
-        this.endereço = endereço;
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 }
