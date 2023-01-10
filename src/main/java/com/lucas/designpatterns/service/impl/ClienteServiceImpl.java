@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class ClienteServiceImpl implements ClienteServeice {
@@ -51,7 +52,7 @@ public class ClienteServiceImpl implements ClienteServeice {
         clienteRepository.deleteById(id);
     }
 
-    private void salvarClienteComCep(Cliente cliente) {
+    Function<Cliente,Cliente> obtemEndereco = cliente-> {
         String cep = cliente.getEndereco().getCep();
         Endereco endereco = enderecoRepository.findById(cep).orElseGet(() -> {
             Endereco novoEndereco = viaCepService.consultarCep(cep);
@@ -59,6 +60,17 @@ public class ClienteServiceImpl implements ClienteServeice {
             return novoEndereco;
         });
         cliente.setEndereco(endereco);
+        return cliente;
+    };
+
+    Function<Cliente,Cliente> salvaCliente = cliente-> {
         clienteRepository.save(cliente);
+        return cliente;
+    };
+    
+    Function<Cliente,Cliente> chainSalvarClienteComCep = obtemEndereco.andThen(salvaCliente);
+
+    private void salvarClienteComCep(Cliente cliente) {
+        chainSalvarClienteComCep.apply(cliente);
     }
 }
